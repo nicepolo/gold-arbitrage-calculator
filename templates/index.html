@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黃金跨境 套利計算器</title>
+    <title>黃金跨境套利計算器 (河內專業版)</title>
     <style>
         * {
             margin: 0;
@@ -11,11 +11,23 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --border: #e5e7eb;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
+            color: var(--dark);
         }
 
         .container {
@@ -23,26 +35,89 @@
             margin: 0 auto;
         }
 
+        /* 頭部 */
         .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .header h1 {
+        .header-title {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .header-title h1 {
             font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 10px;
         }
 
-        .header p {
+        .header-title p {
             font-size: 1.1em;
             color: #666;
         }
 
+        /* 語言選擇 */
+        .language-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .lang-btn:hover {
+            border-color: var(--primary);
+        }
+
+        /* 快速連結按鈕 */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .quick-link-btn {
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .quick-link-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* 主內容 */
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -60,11 +135,12 @@
         .card h2 {
             font-size: 1.5em;
             margin-bottom: 20px;
-            color: #333;
-            border-bottom: 3px solid #667eea;
+            color: var(--dark);
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10px;
         }
 
+        /* 表單 */
         .form-group {
             margin-bottom: 20px;
         }
@@ -73,14 +149,14 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
+            color: var(--dark);
             font-size: 0.95em;
         }
 
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border);
             border-radius: 8px;
             font-size: 1em;
             transition: border-color 0.3s;
@@ -88,19 +164,36 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .form-group input::selection {
+            background: var(--primary);
+            color: white;
+        }
+
+        .form-hint {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* 表單行 */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
 
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* 快速預設按鈕 */
         .quick-presets {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -116,19 +209,19 @@
         }
 
         .btn-preset {
-            background: #f0f0f0;
-            color: #333;
-            border: 2px solid #e0e0e0;
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--border);
         }
 
         .btn-preset:hover {
-            background: #667eea;
+            background: var(--primary);
             color: white;
-            border-color: #667eea;
+            border-color: var(--primary);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             width: 100%;
             margin-top: 10px;
@@ -140,15 +233,41 @@
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--light);
+            color: var(--dark);
             width: 100%;
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: var(--border);
         }
 
+        /* 位置選擇 */
+        .locations {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .location-btn {
+            padding: 10px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .location-btn:hover,
+        .location-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 結果區域 */
         .results {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -157,10 +276,10 @@
         }
 
         .result-item {
-            background: #f8f9fa;
+            background: var(--light);
             padding: 15px;
             border-radius: 8px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--primary);
         }
 
         .result-label {
@@ -172,42 +291,60 @@
 
         .result-value {
             font-size: 1.5em;
-            color: #333;
+            color: var(--dark);
             font-weight: bold;
         }
 
         .result-value.positive {
-            color: #10b981;
+            color: var(--success);
         }
 
         .result-value.negative {
-            color: #ef4444;
+            color: var(--danger);
         }
 
-        .locations {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+        /* 超大利潤顯示 */
+        .profit-highlight {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            border: 3px solid var(--danger);
         }
 
-        .location-btn {
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
+        .profit-highlight h3 {
+            color: var(--danger);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .profit-highlight .big-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .profit-highlight .big-number.positive {
+            color: var(--success);
+        }
+
+        .profit-highlight .big-number.negative {
+            color: var(--danger);
+        }
+
+        /* 部分標題 */
+        .section-title {
+            font-size: 1.1em;
             font-weight: 600;
-            transition: all 0.3s;
+            color: var(--dark);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .location-btn:hover,
-        .location-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
+        /* 歷史紀錄 */
         .history {
             margin-top: 30px;
         }
@@ -215,9 +352,18 @@
         .history h2 {
             font-size: 1.5em;
             margin-bottom: 20px;
-            color: #333;
-            border-bottom: 3px solid #667eea;
+            color: var(--dark);
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10px;
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .history-grid {
@@ -231,7 +377,7 @@
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--primary);
         }
 
         .history-item-header {
@@ -249,20 +395,20 @@
         .history-item-profit {
             font-size: 1.2em;
             font-weight: bold;
-            color: #10b981;
+        }
+
+        .history-item-profit.positive {
+            color: var(--success);
+        }
+
+        .history-item-profit.negative {
+            color: var(--danger);
         }
 
         .history-item-detail {
             font-size: 0.9em;
             color: #666;
             margin-bottom: 5px;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
         }
 
         .empty-state {
@@ -275,42 +421,49 @@
             font-size: 1.1em;
         }
 
-        .section-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #333;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .expense-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            padding: 20px;
+        /* 消息提示 */
+        .message {
+            padding: 15px;
             border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #ff6b6b;
+            margin-bottom: 20px;
+            display: none;
         }
 
-        .highlight-box h3 {
-            color: #d63031;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+        .error-message {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
         }
 
-        .highlight-box .result-item {
-            background: rgba(255, 255, 255, 0.7);
-            border-left-color: #d63031;
-            margin-bottom: 10px;
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            border-left: 4px solid #3c3;
         }
 
+        /* 加載狀態 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 響應式設計 */
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -328,222 +481,408 @@
                 grid-template-columns: 1fr;
             }
 
-            .action-buttons {
-                grid-template-columns: 1fr;
+            .quick-presets {
+                grid-template-columns: repeat(3, 1fr);
             }
 
-            .header h1 {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-title h1 {
                 font-size: 1.8em;
             }
+
+            .profit-highlight .big-number {
+                font-size: 2em;
+            }
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
+        /* 強光可見性 */
+        @media (prefers-color-scheme: light) {
+            .result-value {
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
 
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c33;
-            display: none;
-        }
-
-        .success-message {
-            background: #efe;
-            color: #3c3;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #3c3;
-            display: none;
+            .profit-highlight .big-number {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- 頭部 -->
         <div class="header">
-            <h1>💴 黃金跨境 套利計算器</h1>
-            <p>台越黃金貿易即時利潤計算器</p>
+            <div class="header-title">
+                <h1>💴 黃金跨境套利計算器</h1>
+                <p id="subtitle">台越黃金貿易即時利潤計算器 (河內專業版)</p>
+            </div>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="vi">Tiếng Việt</button>
+            </div>
         </div>
 
+        <!-- 快速機票連結 -->
+        <div class="quick-links">
+            <a href="https://www.skyscanner.com.tw/transport/flights/tpe/han/" target="_blank" class="quick-link-btn">
+                🛫 台北 → 河內
+            </a>
+            <a href="https://www.skyscanner.com.tw/transport/flights/rmq/han/" target="_blank" class="quick-link-btn">
+                🛫 台中 → 河內
+            </a>
+            <a href="https://www.skyscanner.com.tw/transport/flights/khh/han/" target="_blank" class="quick-link-btn">
+                🛫 高雄 → 河內
+            </a>
+        </div>
+
+        <!-- 消息提示 -->
+        <div id="errorMessage" class="message error-message"></div>
+        <div id="successMessage" class="message success-message"></div>
+
+        <!-- 主內容 -->
         <div class="main-content">
             <!-- 左側：計算表單 -->
             <div class="card">
-                <h2>📊 計算參數</h2>
-                <p style="color: #666; margin-bottom: 20px; font-size: 0.95em;">請輸入您的交易詳情</p>
-
-                <div id="errorMessage" class="error-message"></div>
-                <div id="successMessage" class="success-message"></div>
+                <h2>📊 <span data-i18n="params">計算參數</span></h2>
+                <p style="color: #666; margin-bottom: 20px; font-size: 0.95em;" data-i18n="params_hint">請輸入您的交易詳情</p>
 
                 <!-- 位置選擇 -->
                 <div class="form-group">
-                    <label>📍 交易位置</label>
+                    <label data-i18n="location">📍 交易位置</label>
                     <div class="locations">
-                        <button class="location-btn active" data-location="台北 (TPE)">台北 (TPE)</button>
-                        <button class="location-btn" data-location="台中 (RMQ)">台中 (RMQ)</button>
-                        <button class="location-btn" data-location="高雄 (KHH)">高雄 (KHH)</button>
+                        <button class="location-btn active" data-location="台北 (TPE)" data-i18n="tpe">台北 (TPE)</button>
+                        <button class="location-btn" data-location="台中 (RMQ)" data-i18n="rmq">台中 (RMQ)</button>
+                        <button class="location-btn" data-location="高雄 (KHH)" data-i18n="khh">高雄 (KHH)</button>
                     </div>
                 </div>
 
                 <!-- 黃金重量 -->
                 <div class="form-group">
-                    <label>⚖️ 黃金重量 (克)</label>
+                    <label data-i18n="weight">⚖️ 黃金重量 (克)</label>
                     <input type="number" id="goldWeight" placeholder="e.g. 200" value="200" min="0" step="1">
                     <div class="quick-presets">
-                        <button class="btn btn-preset" onclick="setGoldWeight(200)">200g 快速預設</button>
-                        <button class="btn btn-preset" onclick="setGoldWeight(280)">280g 快速預設</button>
+                        <button class="btn btn-preset" onclick="setGoldWeight(200)">200g</button>
+                        <button class="btn btn-preset" onclick="setGoldWeight(280)">280g</button>
+                        <button class="btn btn-preset" onclick="setGoldWeight(300)">300g</button>
                     </div>
                 </div>
 
                 <!-- 價格信息 -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label>💰 台買價 (TWD/錢)</label>
+                        <label data-i18n="buy_price">💰 台買價 (TWD/錢)</label>
                         <input type="number" id="buyPrice" placeholder="TWD / mace" value="0" min="0" step="0.01">
                     </div>
                     <div class="form-group">
-                        <label>💵 越賣價 (萬 VND/錢)</label>
+                        <label data-i18n="sell_price">💵 越賣價 (萬 VND/錢)</label>
                         <input type="number" id="sellPrice" placeholder="e.g. 1685" value="0" min="0" step="0.01">
+                        <div class="form-hint" id="vndHint">目前設定：0 VND</div>
                     </div>
                 </div>
 
                 <!-- 匯率 -->
                 <div class="form-group">
-                    <label>📈 匯率 (VND/TWD)</label>
+                    <label data-i18n="exchange_rate">📈 匯率 (VND/TWD)</label>
                     <input type="number" id="exchangeRate" placeholder="1 台幣兌換多少越盾" value="0" min="0" step="0.01">
                 </div>
 
                 <!-- 開銷拆分 -->
-                <div class="section-title">💸 開銷拆分 (TWD)</div>
-                <div class="expense-grid">
+                <div class="section-title" data-i18n="expenses">💸 開銷拆分 (TWD)</div>
+                <div class="form-row">
                     <div class="form-group">
-                        <label>✈️ 機票</label>
+                        <label data-i18n="ticket">✈️ 機票費用</label>
                         <input type="number" id="ticketCost" placeholder="0" value="0" min="0" step="1">
                     </div>
                     <div class="form-group">
-                        <label>🏨 飯店</label>
+                        <label data-i18n="hotel">🏨 飯店住宿</label>
                         <input type="number" id="hotelCost" placeholder="0" value="0" min="0" step="1">
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
-                        <label>🍽️ 餐飲雜支</label>
+                        <label data-i18n="meal">🍱 餐飲雜支</label>
                         <input type="number" id="mealCost" placeholder="0" value="0" min="0" step="1">
                     </div>
                     <div class="form-group">
-                        <label>🚗 交通車費</label>
+                        <label data-i18n="transport">🚗 交通車費</label>
                         <input type="number" id="transportCost" placeholder="0" value="0" min="0" step="1">
                     </div>
-                    <div class="form-group">
-                        <label>🔐 通道費</label>
-                        <input type="number" id="channelCost" placeholder="0" value="0" min="0" step="1">
-                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="channel">🔐 通道費</label>
+                    <input type="number" id="channelCost" placeholder="0" value="0" min="0" step="1">
                 </div>
 
                 <!-- 按鈕 -->
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="calculateProfit()">🧮 計算利潤</button>
-                    <button class="btn btn-secondary" onclick="clearForm()">🔄 清空表單</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="calculateProfit()" data-i18n="calculate">🧮 計算利潤</button>
+                    <button class="btn btn-secondary" onclick="clearForm()" data-i18n="clear">🔄 清空表單</button>
                 </div>
             </div>
 
             <!-- 右側：結果顯示 -->
             <div class="card">
-                <h2>📈 預估淨利潤</h2>
+                <h2>📈 <span data-i18n="results">預估淨利潤</span></h2>
                 <div id="loading" class="loading">
                     <div class="spinner"></div>
-                    <p>計算中...</p>
+                    <p data-i18n="calculating">計算中...</p>
                 </div>
                 <div id="resultsContainer" style="display: none;">
                     <div class="results">
                         <div class="result-item">
-                            <div class="result-label">總營收</div>
+                            <div class="result-label" data-i18n="revenue">總營收</div>
                             <div class="result-value" id="revenueResult">—</div>
                         </div>
                         <div class="result-item">
-                            <div class="result-label">總成本</div>
+                            <div class="result-label" data-i18n="total_cost">總成本</div>
                             <div class="result-value" id="totalCostResult">—</div>
                         </div>
                         <div class="result-item">
-                            <div class="result-label">毛利</div>
+                            <div class="result-label" data-i18n="gross_profit">毛利</div>
                             <div class="result-value" id="grossProfitResult">—</div>
                         </div>
                         <div class="result-item">
-                            <div class="result-label">淨利</div>
+                            <div class="result-label" data-i18n="net_profit">淨利潤</div>
                             <div class="result-value" id="netProfitResult">—</div>
                         </div>
                     </div>
 
-                    <!-- 介紹費版塊 -->
-                    <div class="highlight-box">
-                        <h3>💼 介紹費計算 (10%)</h3>
+                    <!-- 超大利潤顯示 -->
+                    <div class="profit-highlight">
+                        <h3 data-i18n="final_profit">💎 最終淨利</h3>
+                        <div class="big-number" id="bigProfitResult">—</div>
+                    </div>
+
+                    <!-- 保本線和 ROI -->
+                    <div class="results" style="margin-top: 20px;">
                         <div class="result-item">
-                            <div class="result-label">介紹費 (淨利的 10%)</div>
-                            <div class="result-value" id="introductionFeeResult">—</div>
+                            <div class="result-label" data-i18n="break_even">保本賣價</div>
+                            <div class="result-value" id="breakEvenResult">—</div>
+                            <div class="form-hint" data-i18n="break_even_hint">低於此價格會虧損</div>
                         </div>
                         <div class="result-item">
-                            <div class="result-label">最終淨利 (扣除介紹費)</div>
-                            <div class="result-value" id="finalNetProfitResult">—</div>
+                            <div class="result-label" data-i18n="roi">ROI (投資報酬率)</div>
+                            <div class="result-value" id="roiResult">—</div>
                         </div>
                     </div>
 
-                    <div class="result-item" style="margin-top: 20px; background: #f0f7ff; border-left-color: #0066cc;">
-                        <div class="result-label">利潤率</div>
+                    <div class="result-item" style="margin-top: 20px; background: #f0f7ff; border-left-color: var(--primary);">
+                        <div class="result-label" data-i18n="profit_margin">利潤率</div>
                         <div class="result-value" id="profitMarginResult">—</div>
                     </div>
 
-                    <div class="result-item" style="margin-top: 10px; background: #f0f7ff; border-left-color: #0066cc;">
-                        <div class="result-label">黃金重量 (錢)</div>
+                    <div class="result-item" style="margin-top: 10px; background: #f0f7ff; border-left-color: var(--primary);">
+                        <div class="result-label" data-i18n="mace">黃金重量 (錢)</div>
                         <div class="result-value" id="maceResult">—</div>
                     </div>
 
-                    <button class="btn btn-primary" onclick="saveCalculation()" style="margin-top: 20px;">💾 儲存計算結果</button>
-                    <button class="btn btn-secondary" onclick="copyReport()" style="margin-top: 10px;">📋 一鍵複製報告</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="copyReport()" data-i18n="copy_report">📋 複製報告</button>
+                        <button class="btn btn-secondary" onclick="saveCalculation()" data-i18n="save">💾 儲存結果</button>
+                    </div>
                 </div>
                 <div id="emptyState" class="empty-state">
-                    <p>👈 請在左側輸入參數並點擊「計算利潤」</p>
+                    <p data-i18n="empty_hint">👈 請在左側輸入參數並點擊「計算利潤」</p>
                 </div>
             </div>
         </div>
 
         <!-- 歷史紀錄 -->
         <div class="history">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>📋 歷史紀錄</h2>
-                <button class="btn btn-secondary" onclick="clearHistory()" style="width: auto;">清除歷史</button>
+            <div class="history-controls">
+                <h2 style="margin: 0; border: none; padding: 0; font-size: 1.5em;">📋 <span data-i18n="history">歷史紀錄</span></h2>
+                <button class="btn btn-secondary" onclick="clearHistory()" style="width: auto;" data-i18n="clear_history">清除歷史</button>
             </div>
             <div id="historyContainer" class="history-grid">
                 <div class="empty-state">
-                    <p>暫無計算記錄</p>
+                    <p data-i18n="no_history">暫無計算記錄</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 國際化翻譯 -->
     <script>
+        const translations = {
+            zh: {
+                subtitle: '台越黃金貿易即時利潤計算器 (河內專業版)',
+                params: '計算參數',
+                params_hint: '請輸入您的交易詳情',
+                location: '📍 交易位置',
+                tpe: '台北 (TPE)',
+                rmq: '台中 (RMQ)',
+                khh: '高雄 (KHH)',
+                weight: '⚖️ 黃金重量 (克)',
+                buy_price: '💰 台買價 (TWD/錢)',
+                sell_price: '💵 越賣價 (萬 VND/錢)',
+                exchange_rate: '📈 匯率 (VND/TWD)',
+                expenses: '💸 開銷拆分 (TWD)',
+                ticket: '✈️ 機票費用',
+                hotel: '🏨 飯店住宿',
+                meal: '🍱 餐飲雜支',
+                transport: '🚗 交通車費',
+                channel: '🔐 通道費',
+                calculate: '🧮 計算利潤',
+                clear: '🔄 清空表單',
+                results: '預估淨利潤',
+                calculating: '計算中...',
+                revenue: '總營收',
+                total_cost: '總成本',
+                gross_profit: '毛利',
+                net_profit: '淨利潤',
+                final_profit: '💎 最終淨利',
+                break_even: '保本賣價',
+                break_even_hint: '低於此價格會虧損',
+                roi: 'ROI (投資報酬率)',
+                profit_margin: '利潤率',
+                mace: '黃金重量 (錢)',
+                copy_report: '📋 複製報告',
+                save: '💾 儲存結果',
+                empty_hint: '👈 請在左側輸入參數並點擊「計算利潤」',
+                history: '歷史紀錄',
+                clear_history: '清除歷史',
+                no_history: '暫無計算記錄',
+                report_title: '黃金跨境套利計算報告',
+                basic_info: '基本信息',
+                financial_analysis: '財務分析',
+                profit_calculation: '利潤計算',
+                calculation_time: '計算時間',
+                copy_success: '報告已複製到剪貼板！',
+                copy_failed: '複製失敗，請手動複製',
+                save_success: '計算結果已儲存！',
+                error_invalid: '請填入黃金重量、買價、賣價和匯率',
+                error_calculation: '計算錯誤'
+            },
+            en: {
+                subtitle: 'Taiwan-Vietnam Gold Arbitrage Calculator (Hanoi Professional Edition)',
+                params: 'Calculation Parameters',
+                params_hint: 'Please enter your trading details',
+                location: '📍 Trading Location',
+                tpe: 'Taipei (TPE)',
+                rmq: 'Taichung (RMQ)',
+                khh: 'Kaohsiung (KHH)',
+                weight: '⚖️ Gold Weight (grams)',
+                buy_price: '💰 Buy Price (TWD/mace)',
+                sell_price: '💵 Sell Price (10k VND/mace)',
+                exchange_rate: '📈 Exchange Rate (VND/TWD)',
+                expenses: '💸 Expense Breakdown (TWD)',
+                ticket: '✈️ Flight Cost',
+                hotel: '🏨 Hotel Accommodation',
+                meal: '🍱 Meals & Miscellaneous',
+                transport: '🚗 Transportation Fee',
+                channel: '🔐 Channel Fee',
+                calculate: '🧮 Calculate Profit',
+                clear: '🔄 Clear Form',
+                results: 'Estimated Net Profit',
+                calculating: 'Calculating...',
+                revenue: 'Total Revenue',
+                total_cost: 'Total Cost',
+                gross_profit: 'Gross Profit',
+                net_profit: 'Net Profit',
+                final_profit: '💎 Final Net Profit',
+                break_even: 'Break-even Price',
+                break_even_hint: 'Loss below this price',
+                roi: 'ROI (Return on Investment)',
+                profit_margin: 'Profit Margin',
+                mace: 'Gold Weight (mace)',
+                copy_report: '📋 Copy Report',
+                save: '💾 Save Result',
+                empty_hint: '👈 Enter parameters on the left and click "Calculate Profit"',
+                history: 'History',
+                clear_history: 'Clear History',
+                no_history: 'No calculation records',
+                report_title: 'Gold Arbitrage Calculation Report',
+                basic_info: 'Basic Information',
+                financial_analysis: 'Financial Analysis',
+                profit_calculation: 'Profit Calculation',
+                calculation_time: 'Calculation Time',
+                copy_success: 'Report copied to clipboard!',
+                copy_failed: 'Copy failed, please copy manually',
+                save_success: 'Calculation result saved!',
+                error_invalid: 'Please enter gold weight, buy price, sell price and exchange rate',
+                error_calculation: 'Calculation error'
+            },
+            vi: {
+                subtitle: 'Máy tính Chênh lệch Giá Vàng Đài Loan-Việt Nam (Phiên bản Chuyên nghiệp Hà Nội)',
+                params: 'Tham số Tính toán',
+                params_hint: 'Vui lòng nhập chi tiết giao dịch của bạn',
+                location: '📍 Vị trí Giao dịch',
+                tpe: 'Đài Bắc (TPE)',
+                rmq: 'Đài Trung (RMQ)',
+                khh: 'Cao Hùng (KHH)',
+                weight: '⚖️ Trọng lượng Vàng (grams)',
+                buy_price: '💰 Giá Mua (TWD/chỉ)',
+                sell_price: '💵 Giá Bán (Vạn VND/chỉ)',
+                exchange_rate: '📈 Tỷ giá (VND/TWD)',
+                expenses: '💸 Chi tiết Chi phí (TWD)',
+                ticket: '✈️ Chi phí Vé máy bay',
+                hotel: '🏨 Lưu trú Khách sạn',
+                meal: '🍱 Ăn uống & Khác',
+                transport: '🚗 Chi phí Vận chuyển',
+                channel: '🔐 Chi phí Kênh',
+                calculate: '🧮 Tính Lợi nhuận',
+                clear: '🔄 Xóa Biểu mẫu',
+                results: 'Lợi nhuận Ròng Ước tính',
+                calculating: 'Đang tính toán...',
+                revenue: 'Tổng Doanh thu',
+                total_cost: 'Tổng Chi phí',
+                gross_profit: 'Lợi nhuận Gộp',
+                net_profit: 'Lợi nhuận Ròng',
+                final_profit: '💎 Lợi nhuận Ròng Cuối cùng',
+                break_even: 'Giá Hòa vốn',
+                break_even_hint: 'Lỗ dưới giá này',
+                roi: 'ROI (Lợi suất Đầu tư)',
+                profit_margin: 'Tỷ suất Lợi nhuận',
+                mace: 'Trọng lượng Vàng (chỉ)',
+                copy_report: '📋 Sao chép Báo cáo',
+                save: '💾 Lưu Kết quả',
+                empty_hint: '👈 Nhập tham số bên trái và nhấp "Tính Lợi nhuận"',
+                history: 'Lịch sử',
+                clear_history: 'Xóa Lịch sử',
+                no_history: 'Không có bản ghi tính toán',
+                report_title: 'Báo cáo Tính toán Chênh lệch Giá Vàng',
+                basic_info: 'Thông tin Cơ bản',
+                financial_analysis: 'Phân tích Tài chính',
+                profit_calculation: 'Tính toán Lợi nhuận',
+                calculation_time: 'Thời gian Tính toán',
+                copy_success: 'Báo cáo đã sao chép vào clipboard!',
+                copy_failed: 'Sao chép không thành công, vui lòng sao chép thủ công',
+                save_success: 'Kết quả tính toán đã được lưu!',
+                error_invalid: 'Vui lòng nhập trọng lượng vàng, giá mua, giá bán và tỷ giá',
+                error_calculation: 'Lỗi tính toán'
+            }
+        };
+
+        let currentLanguage = 'zh';
         let currentCalculation = null;
+
+        // 語言切換
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentLanguage = this.dataset.lang;
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[currentLanguage][key]) {
+                    el.textContent = translations[currentLanguage][key];
+                }
+            });
+        }
 
         // 設定黃金重量
         function setGoldWeight(weight) {
             document.getElementById('goldWeight').value = weight;
+            document.getElementById('goldWeight').focus();
         }
 
         // 計算利潤
@@ -560,7 +899,7 @@
 
             // 驗證
             if (!goldWeight || !buyPrice || !sellPrice || !exchangeRate) {
-                showError('請填入黃金重量、買價、賣價和匯率');
+                showError(translations[currentLanguage].error_invalid);
                 return;
             }
 
@@ -591,7 +930,7 @@
 
                 if (!response.ok) {
                     const error = await response.json();
-                    throw new Error(error.error || '計算失敗');
+                    throw new Error(error.error || translations[currentLanguage].error_calculation);
                 }
 
                 const data = await response.json();
@@ -606,7 +945,7 @@
                 document.getElementById('emptyState').style.display = 'none';
 
             } catch (error) {
-                showError('計算錯誤: ' + error.message);
+                showError(translations[currentLanguage].error_calculation + ': ' + error.message);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('emptyState').style.display = 'block';
             }
@@ -615,7 +954,7 @@
         // 顯示結果
         function displayResults(data) {
             const formatCurrency = (value) => {
-                return new Intl.NumberFormat('zh-TW', {
+                return new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : currentLanguage === 'vi' ? 'vi-VN' : 'zh-TW', {
                     style: 'currency',
                     currency: 'TWD',
                     minimumFractionDigits: 0,
@@ -627,21 +966,22 @@
             document.getElementById('totalCostResult').textContent = formatCurrency(data.total_cost);
             document.getElementById('grossProfitResult').textContent = formatCurrency(data.gross_profit);
             document.getElementById('netProfitResult').textContent = formatCurrency(data.net_profit);
-            document.getElementById('introductionFeeResult').textContent = formatCurrency(data.introduction_fee);
             
-            const finalNetProfit = document.getElementById('finalNetProfitResult');
-            finalNetProfit.textContent = formatCurrency(data.final_net_profit);
-            finalNetProfit.className = 'result-value ' + (data.final_net_profit >= 0 ? 'positive' : 'negative');
+            const bigProfit = document.getElementById('bigProfitResult');
+            bigProfit.textContent = formatCurrency(data.net_profit);
+            bigProfit.className = 'big-number ' + (data.net_profit >= 0 ? 'positive' : 'negative');
+
+            document.getElementById('breakEvenResult').textContent = data.break_even_price.toFixed(2) + ' 萬VND/錢';
+            
+            const roiResult = document.getElementById('roiResult');
+            roiResult.textContent = data.roi.toFixed(2) + '%';
+            roiResult.className = 'result-value ' + (data.roi >= 0 ? 'positive' : 'negative');
 
             document.getElementById('profitMarginResult').textContent = data.profit_margin.toFixed(2) + '%';
             document.getElementById('maceResult').textContent = data.mace + ' 錢';
-        }
 
-        // 儲存計算結果
-        async function saveCalculation() {
-            if (!currentCalculation) return;
-            showSuccess('計算結果已儲存！');
-            setTimeout(() => hideSuccess(), 3000);
+            // 更新 VND 提示
+            document.getElementById('vndHint').textContent = `目前設定：${(data.sell_price * 10000).toLocaleString()} VND`;
         }
 
         // 複製報告
@@ -650,42 +990,51 @@
 
             const data = currentCalculation;
             const report = `
-黃金跨境套利計算報告
+${translations[currentLanguage].report_title}
 ═══════════════════════════════════
 
-📊 基本信息
+${translations[currentLanguage].basic_info}
 黃金重量: ${data.gold_weight}克 (${data.mace}錢)
 台灣買價: ${data.buy_price} TWD/錢
 越南賣價: ${data.sell_price} 萬VND/錢
 匯率: ${data.exchange_rate} VND/TWD
 
-💰 財務分析
-總營收: ${data.revenue.toLocaleString('zh-TW')} TWD
-購買成本: ${data.purchase_cost.toLocaleString('zh-TW')} TWD
-開銷總計: ${data.total_expenses.toLocaleString('zh-TW')} TWD
-  - 機票: ${data.ticket_cost} TWD
-  - 飯店: ${data.hotel_cost} TWD
-  - 餐飲: ${data.meal_cost} TWD
-  - 交通: ${data.transport_cost} TWD
-  - 通道費: ${data.channel_cost} TWD
+${translations[currentLanguage].financial_analysis}
+總營收: ${data.revenue.toLocaleString()} TWD
+購買成本: ${data.purchase_cost.toLocaleString()} TWD
+開銷總計: ${data.total_expenses.toLocaleString()} TWD
+  ✈️ 機票: ${data.ticket_cost} TWD
+  🏨 飯店: ${data.hotel_cost} TWD
+  🍱 餐飲: ${data.meal_cost} TWD
+  🚗 交通: ${data.transport_cost} TWD
+  🔐 通道費: ${data.channel_cost} TWD
 
-📈 利潤計算
-毛利: ${data.gross_profit.toLocaleString('zh-TW')} TWD
-淨利: ${data.net_profit.toLocaleString('zh-TW')} TWD
-介紹費 (10%): ${data.introduction_fee.toLocaleString('zh-TW')} TWD
-最終淨利: ${data.final_net_profit.toLocaleString('zh-TW')} TWD
-利潤率: ${data.profit_margin}%
+${translations[currentLanguage].profit_calculation}
+毛利: ${data.gross_profit.toLocaleString()} TWD
+淨利: ${data.net_profit.toLocaleString()} TWD
+保本賣價: ${data.break_even_price.toFixed(2)} 萬VND/錢
+ROI: ${data.roi.toFixed(2)}%
+利潤率: ${data.profit_margin.toFixed(2)}%
 
-時間: ${new Date(data.timestamp).toLocaleString('zh-TW')}
+${translations[currentLanguage].calculation_time}
+${new Date(data.timestamp).toLocaleString()}
 ═══════════════════════════════════
             `.trim();
 
             navigator.clipboard.writeText(report).then(() => {
-                showSuccess('報告已複製到剪貼板！');
+                showSuccess(translations[currentLanguage].copy_success);
                 setTimeout(() => hideSuccess(), 3000);
             }).catch(() => {
-                showError('複製失敗，請手動複製');
+                showError(translations[currentLanguage].copy_failed);
             });
+        }
+
+        // 儲存計算結果
+        function saveCalculation() {
+            if (!currentCalculation) return;
+            localStorage.setItem('lastCalculation', JSON.stringify(currentCalculation));
+            showSuccess(translations[currentLanguage].save_success);
+            setTimeout(() => hideSuccess(), 3000);
         }
 
         // 清空表單
@@ -712,19 +1061,19 @@
 
                 const container = document.getElementById('historyContainer');
                 if (data.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><p>暫無計算記錄</p></div>';
+                    container.innerHTML = `<div class="empty-state"><p>${translations[currentLanguage].no_history}</p></div>`;
                     return;
                 }
 
                 container.innerHTML = data.reverse().map(item => `
                     <div class="history-item">
                         <div class="history-item-header">
-                            <span class="history-item-date">${new Date(item.timestamp).toLocaleDateString('zh-TW')}</span>
-                            <span class="history-item-profit">${item.final_net_profit.toLocaleString('zh-TW')} TWD</span>
+                            <span class="history-item-date">${new Date(item.timestamp).toLocaleDateString()}</span>
+                            <span class="history-item-profit ${item.net_profit >= 0 ? 'positive' : 'negative'}">${item.net_profit.toLocaleString()} TWD</span>
                         </div>
                         <div class="history-item-detail">⚖️ ${item.gold_weight}克 (${item.mace}錢)</div>
                         <div class="history-item-detail">📈 匯率: ${item.exchange_rate}</div>
-                        <div class="history-item-detail">💸 總成本: ${item.total_cost.toLocaleString('zh-TW')} TWD</div>
+                        <div class="history-item-detail">💸 總成本: ${item.total_cost.toLocaleString()} TWD</div>
                     </div>
                 `).join('');
             } catch (error) {
@@ -739,7 +1088,7 @@
             try {
                 await fetch('/api/clear-history', { method: 'POST' });
                 loadHistory();
-                showSuccess('歷史記錄已清除');
+                showSuccess(translations[currentLanguage].save_success);
                 setTimeout(() => hideSuccess(), 3000);
             } catch (error) {
                 showError('清除失敗: ' + error.message);
@@ -776,8 +1125,22 @@
             });
         });
 
+        // 自動全選輸入框
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.select();
+            });
+        });
+
+        // 實時更新 VND 提示
+        document.getElementById('sellPrice').addEventListener('input', function() {
+            const value = parseFloat(this.value) || 0;
+            document.getElementById('vndHint').textContent = `目前設定：${(value * 10000).toLocaleString()} VND`;
+        });
+
         // 初始化
         window.addEventListener('load', () => {
+            updateLanguage();
             loadHistory();
         });
     </script>
