@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import requests
@@ -87,6 +87,12 @@ class GoldCalculator:
             # 利潤率
             profit_margin = (net_profit / revenue * 100) if revenue > 0 else 0
             
+            # 介紹費計算（淨利的 10%）
+            referral_fee = net_profit * 0.1
+            
+            # 實際淨利（扣除介紹費後）
+            actual_net_profit = net_profit - referral_fee
+            
             return {
                 'success': True,
                 'gold_weight': gold_weight,
@@ -108,7 +114,9 @@ class GoldCalculator:
                 'break_even_price': round(break_even_price, 2),
                 'roi': round(roi, 2),
                 'profit_margin': round(profit_margin, 2),
-                'timestamp': datetime.now().isoformat()
+                'referral_fee': round(referral_fee, 2),
+                'actual_net_profit': round(actual_net_profit, 2),
+                'timestamp': datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
             }
         except Exception as e:
             return {
@@ -220,12 +228,14 @@ def send_telegram_report(chat_id, result):
 <b>📊 利潤計算</b>
 • 毛利: {result['gross_profit']:,.0f} TWD
 • 淨利潤: <b>{result['net_profit']:,.0f} TWD</b>
+• 介紹費 (10%): {result['referral_fee']:,.0f} TWD
+• 實際淨利: <b>{result['actual_net_profit']:,.0f} TWD</b>
 • 保本賣價: {result['break_even_price']:,.2f} 萬VND/錢
 • ROI (投資報酬率): <b>{result['roi']:.2f}%</b>
 • 利潤率: {result['profit_margin']:.2f}%
 
-<b>⏰ 計算時間</b>
-{datetime.fromisoformat(result['timestamp']).strftime('%Y-%m-%d %H:%M:%S')}
+<b>⏰ 計算時間（北京時間）</b>
+{result['timestamp']}
 ━━━━━━━━━━━━━━━━━━━━━━━━
     """.strip()
     

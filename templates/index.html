@@ -463,6 +463,16 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* 輸入框閃爍效果 */
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+        }
+
+        .form-group input:focus {
+            animation: pulse 1.5s infinite;
+        }
+
         /* 響應式設計 */
         @media (max-width: 768px) {
             .main-content {
@@ -550,17 +560,6 @@
                 <h2>📊 <span data-i18n="params">計算參數</span></h2>
                 <p style="color: #666; margin-bottom: 20px; font-size: 0.95em;" data-i18n="params_hint">請輸入您的交易詳情</p>
 
-                <!-- 位置選擇 -->
-                <div class="form-group">
-                    <label data-i18n="location">📍 交易位置</label>
-                    <div class="locations">
-                        <button class="location-btn active" data-location="台北 (TPE)" data-i18n="tpe">台北 (TPE)</button>
-                        <button class="location-btn" data-location="台中 (RMQ)" data-i18n="rmq">台中 (RMQ)</button>
-                        <button class="location-btn" data-location="高雄 (KHH)" data-i18n="khh">高雄 (KHH)</button>
-                    </div>
-                </div>
-
-                <!-- 黃金重量 -->
                 <div class="form-group">
                     <label data-i18n="weight">⚖️ 黃金重量 (克)</label>
                     <input type="number" id="goldWeight" placeholder="e.g. 200" value="200" min="0" step="1">
@@ -651,6 +650,18 @@
                         </div>
                     </div>
 
+                    <!-- 介紹費計算 -->
+                    <div class="results" style="margin-top: 20px;">
+                        <div class="result-item">
+                            <div class="result-label" data-i18n="referral_fee">💋 介紹費 (10%)</div>
+                            <div class="result-value" id="referralFeeResult">—</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label" data-i18n="actual_net_profit">💎 實際淨利</div>
+                            <div class="result-value" id="actualNetProfitResult">—</div>
+                        </div>
+                    </div>
+
                     <!-- 超大利潤顯示 -->
                     <div class="profit-highlight">
                         <h3 data-i18n="final_profit">💎 最終淨利</h3>
@@ -734,6 +745,8 @@
                 total_cost: '總成本',
                 gross_profit: '毛利',
                 net_profit: '淨利潤',
+                referral_fee: '💋 介紹費 (10%)',
+                actual_net_profit: '💎 實際淨利',
                 final_profit: '💎 最終淨利',
                 break_even: '保本賣價',
                 break_even_hint: '低於此價格會虧損',
@@ -783,6 +796,8 @@
                 total_cost: 'Total Cost',
                 gross_profit: 'Gross Profit',
                 net_profit: 'Net Profit',
+                referral_fee: '💋 Referral Fee (10%)',
+                actual_net_profit: '💎 Actual Net Profit',
                 final_profit: '💎 Final Net Profit',
                 break_even: 'Break-even Price',
                 break_even_hint: 'Loss below this price',
@@ -966,10 +981,12 @@
             document.getElementById('totalCostResult').textContent = formatCurrency(data.total_cost);
             document.getElementById('grossProfitResult').textContent = formatCurrency(data.gross_profit);
             document.getElementById('netProfitResult').textContent = formatCurrency(data.net_profit);
+            document.getElementById('referralFeeResult').textContent = formatCurrency(data.referral_fee);
+            document.getElementById('actualNetProfitResult').textContent = formatCurrency(data.actual_net_profit);
             
             const bigProfit = document.getElementById('bigProfitResult');
-            bigProfit.textContent = formatCurrency(data.net_profit);
-            bigProfit.className = 'big-number ' + (data.net_profit >= 0 ? 'positive' : 'negative');
+            bigProfit.textContent = formatCurrency(data.actual_net_profit);
+            bigProfit.className = 'big-number ' + (data.actual_net_profit >= 0 ? 'positive' : 'negative');
 
             document.getElementById('breakEvenResult').textContent = data.break_even_price.toFixed(2) + ' 萬VND/錢';
             
@@ -1012,6 +1029,8 @@ ${translations[currentLanguage].financial_analysis}
 ${translations[currentLanguage].profit_calculation}
 毛利: ${data.gross_profit.toLocaleString()} TWD
 淨利: ${data.net_profit.toLocaleString()} TWD
+介紹費 (10%): ${data.referral_fee.toLocaleString()} TWD
+實際淨利: ${data.actual_net_profit.toLocaleString()} TWD
 保本賣價: ${data.break_even_price.toFixed(2)} 萬VND/錢
 ROI: ${data.roi.toFixed(2)}%
 利潤率: ${data.profit_margin.toFixed(2)}%
