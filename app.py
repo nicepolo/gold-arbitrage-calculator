@@ -66,8 +66,8 @@ class GoldCalculator:
             # 單位換算
             mace = gold_weight / GoldCalculator.MACE_TO_GRAM
             
-            # 計算營收：越南賣價 × 錢數 × 匯率 × 10000
-            revenue = sell_price * mace * exchange_rate * GoldCalculator.VND_UNIT
+            # 計算營收：(越南賣價 × 錢數 × 10000) / 匯率
+            revenue = (sell_price * mace * GoldCalculator.VND_UNIT) / exchange_rate
             
             # 計算成本
             purchase_cost = buy_price * mace
