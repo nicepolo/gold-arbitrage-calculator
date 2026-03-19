@@ -139,9 +139,24 @@ def api_calculate():
     try:
         data = request.json
         
+        # 支援兩種買入模式：
+        # 1. 台灣買金：直接提供 buy_price (TWD/錢)
+        # 2. 香港買金（倫敦金）：提供 london_gold_price (USD/oz) + usdt_twd_rate
+        buy_price = data.get('buy_price', 0)
+        london_gold_price = data.get('london_gold_price', 0)
+        usdt_twd_rate = data.get('usdt_twd_rate', 32)
+        buy_mode = data.get('buy_mode', 'taiwan')  # 'taiwan' 或 'london'
+        
+        if buy_mode == 'london' and london_gold_price > 0:
+            # 倫敦金換算台買價：金價(USD/oz) × USDT/TWD ÷ 8.2943
+            G_PER_OZ = 31.1035
+            G_PER_CHI = 3.75
+            TAEL_PER_OZ = G_PER_OZ / G_PER_CHI  # 8.2943
+            buy_price = london_gold_price * usdt_twd_rate / TAEL_PER_OZ
+        
         result = GoldCalculator.calculate(
             gold_weight=data.get('gold_weight', 0),
-            buy_price=data.get('buy_price', 0),
+            buy_price=buy_price,
             sell_price=data.get('sell_price', 0),
             exchange_rate=data.get('exchange_rate', 0),
             ticket_cost=data.get('ticket_cost', 0),
@@ -151,7 +166,12 @@ def api_calculate():
             channel_cost=data.get('channel_cost', 0)
         )
         
+        # 記錄買入模式資訊
         if result['success']:
+            result['buy_mode'] = buy_mode
+            if buy_mode == 'london':
+                result['london_gold_price'] = london_gold_price
+                result['usdt_twd_rate'] = usdt_twd_rate
             calculations_history.append(result)
             return jsonify(result), 200
         else:
