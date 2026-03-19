@@ -175,6 +175,32 @@ def api_clear_history():
     return jsonify({'message': '歷史記錄已清除'}), 200
 
 
+@app.route('/api/usdt-twd-rate', methods=['GET'])
+def api_usdt_twd_rate():
+    """取得幣託 USDT/TWD 即時匯率"""
+    try:
+        response = requests.get(
+            'https://api.bitopro.com/v3/tickers/usdt_twd',
+            timeout=5
+        )
+        if not response.ok:
+            raise Exception(f'BitoPro API error: {response.status_code}')
+        data = response.json()
+        raw_rate = float(data['data']['lastPrice'])
+        if not raw_rate or raw_rate <= 0:
+            raise Exception('Invalid rate')
+        adjusted_rate = raw_rate + 0.15
+        # 四捨五入到小數第一位
+        adjusted_rate = round(adjusted_rate * 10) / 10
+        return jsonify({
+            'rawRate': raw_rate,
+            'adjustedRate': adjusted_rate,
+            'source': 'bitopro'
+        }), 200
+    except Exception as e:
+        return jsonify({'rawRate': None, 'adjustedRate': None, 'source': 'error', 'error': str(e)}), 200
+
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """健康檢查端點（用於 Railway）"""

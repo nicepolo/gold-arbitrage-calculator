@@ -475,6 +475,86 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        /* 加減按鈕 */
+        .input-with-stepper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stepper-btn {
+            width: 42px;
+            height: 42px;
+            border: 2px solid var(--border);
+            background: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .stepper-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .stepper-btn:active {
+            transform: scale(0.95);
+        }
+
+        .input-with-stepper input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 每台錢台幣換算顯示框 */
+        .price-per-chi-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 8px;
+            background: rgba(16, 185, 129, 0.07);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .price-per-chi-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        .price-per-chi-value {
+            text-align: right;
+        }
+
+        .price-per-chi-value .big-price {
+            font-size: 1.3em;
+            font-weight: 900;
+            color: #065f46;
+        }
+
+        .price-per-chi-value .rate-hint {
+            font-size: 0.75em;
+            color: #999;
+        }
+
+        /* 重量換算提示 */
+        .weight-hint {
+            font-size: 0.82em;
+            color: #999;
+            margin-top: 5px;
+        }
+
         /* 響應式設計 */
         @media (max-width: 768px) {
             .main-content {
@@ -564,11 +644,29 @@
 
                 <div class="form-group">
                     <label data-i18n="weight">⚖️ 黃金重量 (克)</label>
-                    <input type="number" id="goldWeight" placeholder="e.g. 200" value="200" min="0" step="1">
                     <div class="quick-presets">
                         <button class="btn btn-preset" onclick="setGoldWeight(200)">200g</button>
                         <button class="btn btn-preset" onclick="setGoldWeight(280)">280g</button>
                         <button class="btn btn-preset" onclick="setGoldWeight(300)">300g</button>
+                    </div>
+                    <div class="input-with-stepper">
+                        <button class="stepper-btn" onclick="adjustWeight(-1)" title="-1g">−</button>
+                        <input type="number" id="goldWeight" placeholder="e.g. 200" value="200" min="0" step="1">
+                        <button class="stepper-btn" onclick="adjustWeight(1)" title="+1g">+</button>
+                    </div>
+                    <div class="weight-hint" id="weightHint">≈ 9.6452 oz · 80.00 錢</div>
+                </div>
+
+                <!-- 傳敦金輸入 -->
+                <div class="form-group">
+                    <label>🌍 倫敦金現貨 (USD/oz)</label>
+                    <input type="number" id="londonGoldPrice" placeholder="e.g. 4835" min="0" step="0.01">
+                    <div id="pricePerChiBox" class="price-per-chi-box" style="display:none;">
+                        <span class="price-per-chi-label">每台錢台幣價格</span>
+                        <div class="price-per-chi-value">
+                            <div class="big-price" id="pricePerChiValue">NT$—</div>
+                            <div class="rate-hint" id="pricePerChiRateHint">USDT/TWD 匯率: —</div>
+                        </div>
                     </div>
                 </div>
 
@@ -580,7 +678,11 @@
                     </div>
                     <div class="form-group">
                         <label data-i18n="sell_price">💵 越賣價 (萬 VND/錢)</label>
-                        <input type="number" id="sellPrice" placeholder="e.g. 1685" value="0" min="0" step="0.01">
+                        <div class="input-with-stepper">
+                            <button class="stepper-btn" onclick="adjustSellPrice(-1)" title="-1萬 VND">−</button>
+                            <input type="number" id="sellPrice" placeholder="e.g. 1685" value="0" min="0" step="0.01">
+                            <button class="stepper-btn" onclick="adjustSellPrice(1)" title="+1萬 VND">+</button>
+                        </div>
                         <div class="form-hint" id="vndHint">目前設定：0 VND</div>
                     </div>
                 </div>
@@ -896,10 +998,84 @@
             });
         }
 
+        // 常數
+        const G_PER_OZ = 31.1035;
+        const G_PER_CHI = 3.75;
+        const TAEL_PER_OZ = G_PER_OZ / G_PER_CHI; // 8.2943
+
+        // USDT/TWD 匯率（預設 32，自動從幣託取得）
+        let usdTwdRate = 32;
+
         // 設定黃金重量
         function setGoldWeight(weight) {
             document.getElementById('goldWeight').value = weight;
-            document.getElementById('goldWeight').focus();
+            updateWeightHint();
+            updatePricePerChi();
+        }
+
+        // 加減黃金重量
+        function adjustWeight(delta) {
+            const input = document.getElementById('goldWeight');
+            const current = parseFloat(input.value) || 0;
+            const newVal = Math.max(0, current + delta);
+            input.value = newVal;
+            updateWeightHint();
+            updatePricePerChi();
+        }
+
+        // 加減越南賣價
+        function adjustSellPrice(delta) {
+            const input = document.getElementById('sellPrice');
+            const current = parseFloat(input.value) || 0;
+            const newVal = Math.max(0, current + delta);
+            input.value = newVal;
+            const vndHint = document.getElementById('vndHint');
+            if (vndHint) vndHint.textContent = `目前設定：${(newVal * 10000).toLocaleString()} VND`;
+        }
+
+        // 更新重量提示
+        function updateWeightHint() {
+            const w = parseFloat(document.getElementById('goldWeight').value) || 0;
+            const hint = document.getElementById('weightHint');
+            if (hint) {
+                if (w > 0) {
+                    const oz = (w / G_PER_OZ).toFixed(4);
+                    const chi = (w / G_PER_CHI).toFixed(2);
+                    hint.textContent = `≈ ${oz} oz · ${chi} 錢`;
+                } else {
+                    hint.textContent = '';
+                }
+            }
+        }
+
+        // 更新每台錢台幣價格顯示
+        function updatePricePerChi() {
+            const goldPrice = parseFloat(document.getElementById('londonGoldPrice').value);
+            const box = document.getElementById('pricePerChiBox');
+            const valueEl = document.getElementById('pricePerChiValue');
+            const rateEl = document.getElementById('pricePerChiRateHint');
+            if (goldPrice > 0 && usdTwdRate > 0) {
+                const pricePerChi = goldPrice * usdTwdRate / TAEL_PER_OZ;
+                valueEl.textContent = `NT$${Math.round(pricePerChi).toLocaleString()}`;
+                rateEl.textContent = `USDT/TWD 匯率: ${usdTwdRate.toFixed(1)}`;
+                box.style.display = 'flex';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        // 從幣託取得 USDT/TWD 匯率
+        async function fetchUsdtTwdRate() {
+            try {
+                const res = await fetch('/api/usdt-twd-rate');
+                const data = await res.json();
+                if (data.adjustedRate && data.adjustedRate > 0) {
+                    usdTwdRate = data.adjustedRate;
+                    updatePricePerChi();
+                }
+            } catch (e) {
+                console.log('幣託匯率取得失敗，使用預設値 32');
+            }
         }
 
         // 計算利潤
@@ -1061,6 +1237,7 @@ ${new Date(data.timestamp).toLocaleString()}
         // 清空表單
         function clearForm() {
             document.getElementById('goldWeight').value = '200';
+            document.getElementById('londonGoldPrice').value = '';
             document.getElementById('buyPrice').value = '0';
             document.getElementById('sellPrice').value = '0';
             document.getElementById('exchangeRate').value = '0';
@@ -1069,8 +1246,10 @@ ${new Date(data.timestamp).toLocaleString()}
             document.getElementById('mealCost').value = '0';
             document.getElementById('transportCost').value = '0';
             document.getElementById('channelCost').value = '0';
+            document.getElementById('pricePerChiBox').style.display = 'none';
             document.getElementById('resultsContainer').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
+            updateWeightHint();
             hideError();
         }
 
@@ -1159,10 +1338,22 @@ ${new Date(data.timestamp).toLocaleString()}
             document.getElementById('vndHint').textContent = `目前設定：${(value * 10000).toLocaleString()} VND`;
         });
 
+        // 倫敦金價格輸入事件
+        document.getElementById('londonGoldPrice').addEventListener('input', function() {
+            updatePricePerChi();
+        });
+
+        // 黃金重量輸入事件
+        document.getElementById('goldWeight').addEventListener('input', function() {
+            updateWeightHint();
+        });
+
         // 初始化
         window.addEventListener('load', () => {
             updateLanguage();
             loadHistory();
+            updateWeightHint();
+            fetchUsdtTwdRate();
         });
     </script>
 </body>
