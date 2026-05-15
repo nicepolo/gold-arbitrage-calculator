@@ -209,7 +209,7 @@ def api_usdt_twd_rate():
         raw_rate = float(data['data']['lastPrice'])
         if not raw_rate or raw_rate <= 0:
             raise Exception('Invalid rate')
-        adjusted_rate = raw_rate + 0.15
+        adjusted_rate = raw_rate + 0.45
         # 四捨五入到小數第一位
         adjusted_rate = round(adjusted_rate * 10) / 10
         return jsonify({
